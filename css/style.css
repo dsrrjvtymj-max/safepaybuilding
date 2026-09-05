@@ -356,6 +356,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   align-items: stretch;
 }
 
+.pricing-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 780px;
+  margin: 0 auto;
+}
+
 .price-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -364,24 +370,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   display: flex;
   flex-direction: column;
   position: relative;
-}
-
-.price-card.featured {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary), 0 20px 50px rgba(45, 212, 191, 0.12);
-}
-
-.price-tag {
-  position: absolute;
-  top: -13px;
-  left: 28px;
-  background: var(--color-primary);
-  color: #06251f;
-  font-size: 0.75rem;
-  font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin: 0;
 }
 
 .price-card h3 { font-size: 1.15rem; }
