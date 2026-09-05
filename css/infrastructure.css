@@ -1,0 +1,222 @@
+.main-nav a.active { color: var(--color-primary); }
+
+.infra-hero { padding-bottom: 24px; }
+.infra-hero .section-sub { max-width: 780px; margin: 0 auto; }
+.infra-hero .section-sub a { color: var(--color-primary); text-decoration: underline; }
+
+/* ---- SVG topology diagram ---- */
+.infra-svg-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.infra-svg-wrap svg {
+  display: block;
+  width: 100%;
+  min-width: 860px;
+  height: auto;
+}
+
+.diagram-caption {
+  max-width: 760px;
+  margin: 22px auto 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin: 8px auto 0;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.diagram-legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+.diagram-legend i {
+  width: 22px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.lg-app { background: var(--color-surface-2); border: 1px solid var(--color-border); }
+.lg-db { background: rgba(45, 212, 191, 0.10); border: 1px solid var(--color-primary); }
+.lg-ext { background: var(--color-bg-alt); border: 1px dashed var(--color-text-muted); }
+
+/* ---- Layered architecture diagram ---- */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.tier {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  padding: 16px 18px;
+}
+
+.tier + .tier { margin-top: 34px; position: relative; }
+
+/* connector between tiers */
+.tier + .tier::before {
+  content: "";
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  width: 2px;
+  height: 30px;
+  background: var(--color-border);
+}
+.tier + .tier::after {
+  content: "▼";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-accent);
+  font-size: 0.7rem;
+}
+
+.tier-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.tier-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.node {
+  flex: 1 1 150px;
+  min-width: 140px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.node .node-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--color-text);
+  margin-bottom: 3px;
+}
+
+.node .node-tool {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.node.node-db { border-color: var(--color-primary); background: rgba(45, 212, 191, 0.06); }
+.node.node-ext { border-style: dashed; }
+
+.tier.tier-external { background: var(--color-bg-alt); }
+
+.stack-footer-bar {
+  margin: 30px auto 0;
+  max-width: 960px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px 24px;
+}
+
+/* ---- Tables ---- */
+.infra-content { max-width: 960px; }
+
+.infra-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.infra-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+  background: var(--color-surface);
+}
+
+.infra-table th,
+.infra-table td {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 0.88rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.infra-table thead th {
+  color: var(--color-text);
+  font-size: 0.8rem;
+  background: var(--color-surface-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.infra-table tbody th {
+  color: var(--color-text);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.infra-table td { color: var(--color-text-muted); }
+.infra-table tbody tr:last-child th,
+.infra-table tbody tr:last-child td { border-bottom: none; }
+
+.infra-table code {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 1px 5px;
+  font-size: 0.82em;
+  color: var(--color-text);
+}
+
+.infra-block { margin-bottom: 52px; }
+.infra-block h2 { font-size: 1.3rem; color: var(--color-text); }
+.infra-block > p { font-size: 1rem; max-width: 780px; }
+
+.infra-note {
+  display: block;
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+}
+
+.infra-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+@media (max-width: 720px) {
+  .tier-nodes { flex-direction: column; }
+  .node { min-width: 0; }
+}

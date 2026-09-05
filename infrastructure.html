@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infrastructure &amp; Hosting | SafePay Building</title>
+<meta name="description" content="The full technical architecture behind SafePay Building — databases, application services, and the tools used to host, run, and monitor the platform.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/infrastructure.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <a href="index.html#features">Features</a>
+      <a href="architecture.html">How It's Built</a>
+      <a href="infrastructure.html" class="active">Infrastructure</a>
+      <a href="help.html">Help</a>
+      <a href="dashboard-customer.html">Customer Dashboard</a>
+      <a href="dashboard-contractor.html">Contractor Dashboard</a>
+      <a href="index.html#contact" class="nav-cta">Get Started</a>
+    </nav>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="section infra-hero">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Infrastructure &amp; Hosting</p>
+        <h1>What it takes to run SafePay Building</h1>
+        <p class="section-sub">
+          The <a href="architecture.html">How It's Built</a> page covers the money flow through Mangopay.
+          This page is the technical blueprint underneath it: the databases that hold project and ledger
+          data, the application services, and the hosting, security and monitoring tools that keep the
+          platform online. SafePay Building never stores card numbers or wallet balances itself — those
+          live inside Mangopay — so this stack is deliberately lean.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">At a glance</p>
+        <h2>System topology</h2>
+        <p class="section-sub">How a request flows: browser to Cloudflare, on to the frontend host and API, and from the API out to the data stores and external services.</p>
+      </div>
+
+      <div class="infra-svg-wrap">
+        <svg viewBox="0 0 1080 700" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Topology diagram. Clients (web app, mobile PWA, marketing site) send HTTPS requests to Cloudflare, which provides DNS, TLS, CDN, WAF and DDoS protection. Cloudflare routes page loads to the frontend host (Vercel, Netlify or S3 with CloudFront) and API calls to the API tier (Node/TypeScript on AWS ECS Fargate, with background workers, a scheduler and a Mangopay webhook receiver). The API reads and writes the data stores: PostgreSQL on RDS or Neon as the system of record, Redis for cache and queue, Amazon S3 for photos and documents, an append-only audit log, an OpenSearch search index and an optional BigQuery or Snowflake data warehouse. The API also calls external services over HTTPS and webhooks: the Mangopay API for wallets, pay-ins, transfers, payouts and KYC; Postmark and Twilio for email and SMS; Sentry and Grafana or Datadog for monitoring; and AWS Secrets Manager for secrets. GitHub Actions CI/CD deploys the frontend host and the API.">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" fill="var(--color-accent)"/>
+            </marker>
+            <marker id="ahm" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10z" fill="var(--color-text-muted)"/>
+            </marker>
+          </defs>
+          <style>
+            .d-svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .d-grp { fill: var(--color-bg-alt); stroke: var(--color-border); }
+            .d-box { fill: var(--color-surface); stroke: var(--color-border); }
+            .d-box2 { fill: var(--color-surface-2); stroke: var(--color-border); }
+            .d-db { fill: rgba(45, 212, 191, 0.08); stroke: var(--color-primary); }
+            .d-edge { fill: var(--color-surface-2); stroke: var(--color-primary); }
+            .d-hl { fill: rgba(45, 212, 191, 0.12); stroke: var(--color-primary); }
+            .d-t { fill: var(--color-text); font-size: 13px; font-weight: 700; }
+            .d-s { fill: var(--color-text-muted); font-size: 11px; }
+            .d-lbl { fill: var(--color-primary); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; }
+            .d-flow { stroke: var(--color-accent); stroke-width: 1.6; fill: none; marker-end: url(#ah); }
+            .d-flow-d { stroke: var(--color-text-muted); stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; opacity: 0.6; marker-end: url(#ahm); }
+            .d-flow-l { fill: var(--color-text-muted); font-size: 10.5px; }
+          </style>
+
+          <g class="d-svg">
+
+            <!-- CI/CD -->
+            <rect class="d-box2" x="864" y="40" width="192" height="62" rx="9"/>
+            <text class="d-t" x="960" y="66" text-anchor="middle">GitHub Actions</text>
+            <text class="d-s" x="960" y="84" text-anchor="middle">CI/CD · builds, migrations, deploy</text>
+
+            <!-- Clients -->
+            <rect class="d-grp" x="300" y="44" width="420" height="94" rx="12"/>
+            <text class="d-lbl" x="318" y="64">CLIENTS</text>
+            <rect class="d-box2" x="316" y="72" width="126" height="54" rx="8"/>
+            <text class="d-t" x="379" y="96" text-anchor="middle">Web app</text>
+            <text class="d-s" x="379" y="112" text-anchor="middle">React SPA</text>
+            <rect class="d-box2" x="450" y="72" width="120" height="54" rx="8"/>
+            <text class="d-t" x="510" y="96" text-anchor="middle">Mobile PWA</text>
+            <text class="d-s" x="510" y="112" text-anchor="middle">installable</text>
+            <rect class="d-box2" x="578" y="72" width="126" height="54" rx="8"/>
+            <text class="d-t" x="641" y="96" text-anchor="middle">Marketing site</text>
+            <text class="d-s" x="641" y="112" text-anchor="middle">static HTML</text>
+
+            <!-- Cloudflare -->
+            <rect class="d-edge" x="120" y="166" width="840" height="58" rx="10"/>
+            <text class="d-t" x="540" y="190" text-anchor="middle">Cloudflare</text>
+            <text class="d-s" x="540" y="208" text-anchor="middle">DNS · TLS · CDN · WAF · rate-limiting · DDoS mitigation</text>
+
+            <!-- Frontend host -->
+            <rect class="d-box" x="150" y="272" width="320" height="90" rx="10"/>
+            <text class="d-t" x="310" y="298" text-anchor="middle">Frontend host</text>
+            <text class="d-s" x="310" y="316" text-anchor="middle">Vercel · Netlify · S3 + CloudFront</text>
+            <text class="d-s" x="310" y="332" text-anchor="middle">serves SPA + marketing site</text>
+
+            <!-- API -->
+            <rect class="d-box" x="560" y="272" width="340" height="90" rx="10"/>
+            <text class="d-t" x="730" y="296" text-anchor="middle">API · workers · scheduler</text>
+            <text class="d-s" x="730" y="314" text-anchor="middle">Node / TypeScript · AWS ECS Fargate</text>
+            <text class="d-s" x="730" y="330" text-anchor="middle">+ Mangopay webhook receiver</text>
+
+            <!-- Data stores -->
+            <rect class="d-grp" x="120" y="410" width="540" height="256" rx="12"/>
+            <text class="d-lbl" x="138" y="432">DATA STORES</text>
+            <rect class="d-db" x="138" y="442" width="160" height="86" rx="8"/>
+            <text class="d-t" x="218" y="472" text-anchor="middle">PostgreSQL</text>
+            <text class="d-s" x="218" y="489" text-anchor="middle">RDS · Neon</text>
+            <text class="d-s" x="218" y="505" text-anchor="middle">system of record</text>
+            <rect class="d-db" x="312" y="442" width="160" height="86" rx="8"/>
+            <text class="d-t" x="392" y="472" text-anchor="middle">Redis</text>
+            <text class="d-s" x="392" y="489" text-anchor="middle">ElastiCache · Upstash</text>
+            <text class="d-s" x="392" y="505" text-anchor="middle">cache · queue</text>
+            <rect class="d-db" x="486" y="442" width="160" height="86" rx="8"/>
+            <text class="d-t" x="566" y="472" text-anchor="middle">Object storage</text>
+            <text class="d-s" x="566" y="489" text-anchor="middle">Amazon S3</text>
+            <text class="d-s" x="566" y="505" text-anchor="middle">photos · documents</text>
+            <rect class="d-db" x="138" y="544" width="160" height="86" rx="8"/>
+            <text class="d-t" x="218" y="574" text-anchor="middle">Audit log</text>
+            <text class="d-s" x="218" y="591" text-anchor="middle">append-only</text>
+            <text class="d-s" x="218" y="607" text-anchor="middle">immutable history</text>
+            <rect class="d-db" x="312" y="544" width="160" height="86" rx="8"/>
+            <text class="d-t" x="392" y="574" text-anchor="middle">OpenSearch</text>
+            <text class="d-s" x="392" y="591" text-anchor="middle">search index</text>
+            <text class="d-s" x="392" y="607" text-anchor="middle">rebuilt from Postgres</text>
+            <rect class="d-db" x="486" y="544" width="160" height="86" rx="8"/>
+            <text class="d-t" x="566" y="574" text-anchor="middle">Data warehouse</text>
+            <text class="d-s" x="566" y="591" text-anchor="middle">BigQuery · Snowflake</text>
+            <text class="d-s" x="566" y="607" text-anchor="middle">reporting (optional)</text>
+
+            <!-- External services -->
+            <rect class="d-grp" x="720" y="410" width="336" height="256" rx="12"/>
+            <text class="d-lbl" x="738" y="432">EXTERNAL SERVICES</text>
+            <rect class="d-hl" x="738" y="442" width="300" height="46" rx="8"/>
+            <text class="d-t" x="888" y="461" text-anchor="middle">Mangopay API</text>
+            <text class="d-s" x="888" y="478" text-anchor="middle">wallets · pay-ins · transfers · payouts · KYC</text>
+            <rect class="d-box2" x="738" y="498" width="300" height="46" rx="8"/>
+            <text class="d-t" x="888" y="517" text-anchor="middle">Email + SMS</text>
+            <text class="d-s" x="888" y="534" text-anchor="middle">Postmark · Twilio</text>
+            <rect class="d-box2" x="738" y="554" width="300" height="46" rx="8"/>
+            <text class="d-t" x="888" y="573" text-anchor="middle">Monitoring</text>
+            <text class="d-s" x="888" y="590" text-anchor="middle">Sentry · Grafana / Datadog</text>
+            <rect class="d-box2" x="738" y="610" width="300" height="46" rx="8"/>
+            <text class="d-t" x="888" y="629" text-anchor="middle">Secrets</text>
+            <text class="d-s" x="888" y="646" text-anchor="middle">AWS Secrets Manager</text>
+
+            <!-- Flows -->
+            <path class="d-flow" d="M510 138 L510 164"/>
+            <text class="d-flow-l" x="518" y="156">HTTPS</text>
+
+            <path class="d-flow" d="M360 224 L316 270"/>
+            <text class="d-flow-l" x="300" y="255" text-anchor="end">page load</text>
+
+            <path class="d-flow" d="M710 224 L710 270"/>
+            <text class="d-flow-l" x="718" y="252">XHR / fetch</text>
+
+            <path class="d-flow" d="M660 362 L560 408"/>
+            <text class="d-flow-l" x="556" y="392" text-anchor="end">read / write</text>
+
+            <path class="d-flow" d="M840 362 L840 408"/>
+            <text class="d-flow-l" x="848" y="392">HTTPS + webhooks</text>
+
+            <path class="d-flow-d" d="M900 96 L828 270"/>
+            <path class="d-flow-d" d="M864 92 L470 276"/>
+            <text class="d-flow-l" x="612" y="150">deploy</text>
+
+          </g>
+        </svg>
+      </div>
+
+      <div class="diagram-legend" aria-hidden="true">
+        <span><i class="lg-app"></i> App / edge service</span>
+        <span><i class="lg-db"></i> Data store</span>
+        <span><i class="lg-ext"></i> Third-party service</span>
+      </div>
+
+      <p class="diagram-caption">
+        Card details and money never enter the clients, frontend host, API or data stores — the dashboards post
+        card data straight into Mangopay's hosted fields, and SafePay's database only stores Mangopay reference IDs.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Layer by layer</p>
+        <h2>Every tier, and the tools in it</h2>
+      </div>
+
+      <div class="stack" role="img" aria-label="Layered architecture diagram: users on browser and mobile connect through a Cloudflare edge tier (DNS, CDN, WAF) to a static frontend host, then to an API and background-worker application tier, which reads and writes a data tier of PostgreSQL, Redis, S3 object storage, an append-only audit log and OpenSearch, and calls external services including the Mangopay API, a KYC provider, email and SMS, error tracking, metrics and secrets management.">
+
+        <div class="tier">
+          <p class="tier-label">1 · Clients</p>
+          <div class="tier-nodes">
+            <div class="node">
+              <span class="node-name">Web app</span>
+              <span class="node-tool">React SPA (customer &amp; contractor dashboards)</span>
+            </div>
+            <div class="node">
+              <span class="node-name">Mobile web / PWA</span>
+              <span class="node-tool">Same build, installable</span>
+            </div>
+            <div class="node">
+              <span class="node-name">Marketing site</span>
+              <span class="node-tool">Static HTML (this site)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier">
+          <p class="tier-label">2 · Edge / network</p>
+          <div class="tier-nodes">
+            <div class="node">
+              <span class="node-name">DNS + TLS</span>
+              <span class="node-tool">Cloudflare</span>
+            </div>
+            <div class="node">
+              <span class="node-name">CDN &amp; caching</span>
+              <span class="node-tool">Cloudflare CDN</span>
+            </div>
+            <div class="node">
+              <span class="node-name">WAF + rate limiting + DDoS</span>
+              <span class="node-tool">Cloudflare WAF / Turnstile</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier">
+          <p class="tier-label">3 · Frontend hosting</p>
+          <div class="tier-nodes">
+            <div class="node">
+              <span class="node-name">Static asset host</span>
+              <span class="node-tool">Vercel / Netlify / S3 + CloudFront</span>
+            </div>
+            <div class="node">
+              <span class="node-name">Build &amp; deploy</span>
+              <span class="node-tool">GitHub Actions CI/CD</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier">
+          <p class="tier-label">4 · Application services</p>
+          <div class="tier-nodes">
+            <div class="node">
+              <span class="node-name">API server</span>
+              <span class="node-tool">Node/TypeScript (Fastify) — containers on AWS ECS Fargate / Render</span>
+            </div>
+            <div class="node">
+              <span class="node-name">Background workers</span>
+              <span class="node-tool">Payout retries, webhook processing, notifications</span>
+            </div>
+            <div class="node">
+              <span class="node-name">Scheduler</span>
+              <span class="node-tool">Cron — milestone reminders, reconciliation</span>
+            </div>
+            <div class="node">
+              <span class="node-name">Webhook receiver</span>
+              <span class="node-tool">Ingests Mangopay event callbacks</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier">
+          <p class="tier-label">5 · Data stores</p>
+          <div class="tier-nodes">
+            <div class="node node-db">
+              <span class="node-name">PostgreSQL</span>
+              <span class="node-tool">Primary DB — Amazon RDS / Neon</span>
+            </div>
+            <div class="node node-db">
+              <span class="node-name">Redis</span>
+              <span class="node-tool">Cache, sessions, job queue — ElastiCache / Upstash</span>
+            </div>
+            <div class="node node-db">
+              <span class="node-name">Object storage</span>
+              <span class="node-tool">Amazon S3 — progress photos, documents</span>
+            </div>
+            <div class="node node-db">
+              <span class="node-name">Audit log store</span>
+              <span class="node-tool">Append-only Postgres table / QLDB</span>
+            </div>
+            <div class="node node-db">
+              <span class="node-name">Search &amp; analytics</span>
+              <span class="node-tool">OpenSearch — project / transaction search</span>
+            </div>
+            <div class="node node-db">
+              <span class="node-name">Data warehouse</span>
+              <span class="node-tool">BigQuery / Snowflake — reporting (optional)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier tier-external">
+          <p class="tier-label">6 · External services</p>
+          <div class="tier-nodes">
+            <div class="node node-ext">
+              <span class="node-name">Mangopay API</span>
+              <span class="node-tool">Wallets, Payins, Transfers, Payouts, KYC</span>
+            </div>
+            <div class="node node-ext">
+              <span class="node-name">Email + SMS</span>
+              <span class="node-tool">Postmark + Twilio</span>
+            </div>
+            <div class="node node-ext">
+              <span class="node-name">Error tracking</span>
+              <span class="node-tool">Sentry</span>
+            </div>
+            <div class="node node-ext">
+              <span class="node-name">Metrics &amp; logs</span>
+              <span class="node-tool">Grafana Cloud / Datadog</span>
+            </div>
+            <div class="node node-ext">
+              <span class="node-name">Secrets</span>
+              <span class="node-tool">AWS Secrets Manager</span>
+            </div>
+            <div class="node node-ext">
+              <span class="node-name">Identity checks</span>
+              <span class="node-tool">Companies House API, licence lookups</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="stack-footer-bar">
+        Card details and money never enter tiers 1–5. The dashboards call Mangopay's hosted fields directly,
+        and SafePay's own database only ever stores Mangopay <em>reference IDs</em> alongside project data.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container infra-content">
+
+      <div class="infra-block">
+        <h2>Databases</h2>
+        <p>
+          One relational database is the system of record for everything SafePay Building owns. The other
+          stores are supporting infrastructure — cache, files, logs and search — each chosen because
+          Postgres alone would be the wrong tool for that job.
+        </p>
+        <div class="infra-table-wrap">
+          <table class="infra-table">
+            <thead>
+              <tr>
+                <th scope="col">Store</th>
+                <th scope="col">What it holds</th>
+                <th scope="col">Why it's separate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">PostgreSQL<span class="infra-note">Amazon RDS / Neon</span></th>
+                <td>Users and roles, businesses, projects, milestones, milestone evidence metadata, disputes and messages, the internal transaction ledger, and every Mangopay reference ID (user, wallet, pay-in, transfer, payout).</td>
+                <td>Primary system of record. Relational integrity and transactions matter — a milestone release touches several rows at once and must be all-or-nothing.</td>
+              </tr>
+              <tr>
+                <th scope="row">Redis<span class="infra-note">ElastiCache / Upstash</span></th>
+                <td>Login sessions, API rate-limit counters, short-lived caches of dashboard data, and the background job queue (BullMQ).</td>
+                <td>In-memory speed for data that is ephemeral or changes by the second. Keeping it out of Postgres protects the primary DB from load.</td>
+              </tr>
+              <tr>
+                <th scope="row">Object storage<span class="infra-note">Amazon S3</span></th>
+                <td>Progress photos, inspection reports, signed contracts, lien waivers, dispute evidence uploads.</td>
+                <td>Binary files don't belong in a relational DB. S3 gives cheap, durable storage with per-file access control; Postgres just stores the key and metadata.</td>
+              </tr>
+              <tr>
+                <th scope="row">Audit log<span class="infra-note">Append-only table / QLDB</span></th>
+                <td>An immutable record of every state change: who approved a milestone, when funds moved, every admin action, every webhook received.</td>
+                <td>Financial dispute resolution and compliance need a tamper-evident history that is never updated or deleted — different guarantees from normal tables.</td>
+              </tr>
+              <tr>
+                <th scope="row">Search index<span class="infra-note">OpenSearch</span></th>
+                <td>Denormalised copies of projects, contractors and transactions for fast full-text and faceted search in dashboards and admin tools.</td>
+                <td>Full-text search and aggregations across large tables are slow in Postgres; the index is rebuilt from Postgres and is disposable.</td>
+              </tr>
+              <tr>
+                <th scope="row">Data warehouse<span class="infra-note">BigQuery / Snowflake — optional</span></th>
+                <td>Historical snapshots for finance reporting, cohort analysis and regulatory returns.</td>
+                <td>Heavy analytical queries should never run against the production database. Loaded nightly via ETL.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="infra-block">
+        <h2>Hosting &amp; operational tooling</h2>
+        <p>
+          The platform is designed to run on managed services so a small team can operate it. Everything
+          below is deployed from Git — no manual server changes.
+        </p>
+        <div class="infra-table-wrap">
+          <table class="infra-table">
+            <thead>
+              <tr>
+                <th scope="col">Layer</th>
+                <th scope="col">Tool</th>
+                <th scope="col">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">DNS / CDN / WAF</th>
+                <td>Cloudflare</td>
+                <td>Domain, TLS certificates, global caching, web application firewall, bot protection and DDoS mitigation.</td>
+              </tr>
+              <tr>
+                <th scope="row">Frontend host</th>
+                <td>Vercel or Netlify <span class="infra-note">(alt: S3 + CloudFront)</span></td>
+                <td>Serves the static marketing site and the compiled dashboard SPA, with preview deploys per pull request.</td>
+              </tr>
+              <tr>
+                <th scope="row">Application runtime</th>
+                <td>AWS ECS Fargate <span class="infra-note">(alt: Render, Fly.io)</span></td>
+                <td>Runs the API, workers and scheduler as containers with autoscaling and no server patching.</td>
+              </tr>
+              <tr>
+                <th scope="row">Container registry</th>
+                <td>Amazon ECR</td>
+                <td>Stores the Docker images built by CI.</td>
+              </tr>
+              <tr>
+                <th scope="row">Managed Postgres</th>
+                <td>Amazon RDS <span class="infra-note">(alt: Neon, Supabase)</span></td>
+                <td>Automated backups, point-in-time restore, read replicas, encryption at rest.</td>
+              </tr>
+              <tr>
+                <th scope="row">Managed Redis</th>
+                <td>Amazon ElastiCache <span class="infra-note">(alt: Upstash)</span></td>
+                <td>Cache and queue backend, replicated for failover.</td>
+              </tr>
+              <tr>
+                <th scope="row">CI/CD</th>
+                <td>GitHub Actions</td>
+                <td>Runs tests, builds images, applies database migrations, deploys on merge to <code>main</code>.</td>
+              </tr>
+              <tr>
+                <th scope="row">Infrastructure as code</th>
+                <td>Terraform</td>
+                <td>Every AWS resource above is defined in version-controlled config.</td>
+              </tr>
+              <tr>
+                <th scope="row">Secrets</th>
+                <td>AWS Secrets Manager</td>
+                <td>Mangopay API keys, database credentials, webhook signing secrets — injected at runtime, never in Git.</td>
+              </tr>
+              <tr>
+                <th scope="row">Observability</th>
+                <td>Grafana Cloud / Datadog + Sentry</td>
+                <td>Metrics, dashboards, log aggregation, uptime alerts and application error tracking.</td>
+              </tr>
+              <tr>
+                <th scope="row">Transactional messaging</th>
+                <td>Postmark (email) + Twilio (SMS)</td>
+                <td>Milestone notifications, approval requests, payout confirmations, 2FA codes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="infra-block">
+        <h2>Environments &amp; data protection</h2>
+        <p>
+          Three isolated environments — <code>development</code>, <code>staging</code> and
+          <code>production</code> — each with its own database and its own Mangopay sandbox or live
+          credentials. Key controls:
+        </p>
+        <div class="infra-table-wrap">
+          <table class="infra-table">
+            <thead>
+              <tr>
+                <th scope="col">Concern</th>
+                <th scope="col">Approach</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">PCI scope</th>
+                <td>Minimised — card data is entered into Mangopay-hosted fields and never transits SafePay servers, so the platform stays SAQ-A.</td>
+              </tr>
+              <tr>
+                <th scope="row">Encryption</th>
+                <td>TLS 1.2+ in transit everywhere; AES-256 at rest on RDS, S3 and backups.</td>
+              </tr>
+              <tr>
+                <th scope="row">Backups</th>
+                <td>Automated daily Postgres snapshots with 35-day point-in-time recovery; S3 versioning with lifecycle rules.</td>
+              </tr>
+              <tr>
+                <th scope="row">Access</th>
+                <td>Least-privilege IAM roles, SSO for the team, no shared logins, all production access audited.</td>
+              </tr>
+              <tr>
+                <th scope="row">Data residency</th>
+                <td>All stores hosted in a UK / EU region to match Mangopay and UK GDPR.</td>
+              </tr>
+              <tr>
+                <th scope="row">Retention</th>
+                <td>Project and ledger records kept for the statutory period; personal data erasable on request except where financial-record law requires retention.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="sources-note">
+        Reference: <a href="https://docs.mangopay.com/" target="_blank" rel="noopener">Mangopay documentation</a> —
+        wallets, KYC, webhooks and payout timings. Tool names are illustrative of a typical managed-services
+        stack; alternatives are noted where relevant.
+      </p>
+
+      <div class="infra-cta">
+        <a href="architecture.html" class="btn btn-primary">See the money flow</a>
+        <a href="dashboard-customer.html" class="btn btn-ghost">View a dashboard</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+      <p>Escrow-protected payments for construction and renovation projects.</p>
+    </div>
+
+    <div class="footer-links">
+      <div>
+        <h4>Product</h4>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#pricing">Pricing</a>
+      </div>
+      <div>
+        <h4>Build</h4>
+        <a href="architecture.html">How It's Built</a>
+        <a href="infrastructure.html">Infrastructure</a>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <a href="help-milestones.html">Milestone Tranches</a>
+        <a href="help-disputes.html">Conflict Resolution</a>
+        <a href="index.html#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <span id="year"></span> SafePay Building. All rights reserved.</p>
+    <p class="footer-disclaimer">Demo site — not a real financial service.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
