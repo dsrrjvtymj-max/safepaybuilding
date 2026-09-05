@@ -687,7 +687,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .footer-links {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 24px;
 }
 

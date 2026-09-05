@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conflict &amp; Dispute Resolution | SafePay Building</title>
+<meta name="description" content="What happens when a milestone is disputed on SafePay Building — the step-by-step process and how escrow funds stay protected.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/architecture.css">
+<link rel="stylesheet" href="css/help.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <a href="index.html#features">Features</a>
+      <a href="architecture.html">How It's Built</a>
+      <a href="help.html" class="active">Help</a>
+      <a href="dashboard-customer.html">Customer Dashboard</a>
+      <a href="dashboard-contractor.html">Contractor Dashboard</a>
+      <a href="index.html#contact" class="nav-cta">Get Started</a>
+    </nav>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="section arch-hero">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Help Center · Conflict Resolution</p>
+        <h1>What happens if a milestone is disputed</h1>
+        <p class="section-sub">
+          Most projects never need this page. But if a customer and contractor disagree about whether a milestone
+          is really finished, here's exactly what happens to the work — and the money.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="dispute-process" class="section section-alt highlight-target">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">The Process</p>
+        <h2>Four steps, start to finish</h2>
+      </div>
+
+      <ol class="steps">
+        <li class="step">
+          <div class="step-number">1</div>
+          <h3>Raise a dispute</h3>
+          <p>Either party flags the milestone in question, from their dashboard, within 5 days of it being submitted for approval.</p>
+        </li>
+        <li class="step">
+          <div class="step-number">2</div>
+          <h3>Evidence review</h3>
+          <p>Both sides upload photos, messages and inspection reports. The disputed tranche stays frozen in escrow the whole time.</p>
+        </li>
+        <li class="step">
+          <div class="step-number">3</div>
+          <h3>Mediator decision</h3>
+          <p>A SafePay case mediator reviews everything submitted and proposes a resolution — typically within 3 business days.</p>
+        </li>
+        <li class="step">
+          <div class="step-number">4</div>
+          <h3>Funds released</h3>
+          <p>The disputed amount is released per the agreed outcome: fully to the contractor, fully back to the customer, or split.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container arch-content">
+
+      <article class="arch-block">
+        <h2>What happens to the money while it's under review</h2>
+        <p>
+          Nothing moves. The disputed tranche sits exactly where it was before the dispute was raised — in the
+          customer's escrow wallet — because SafePay Building only ever fires a Mangopay Transfer once a milestone
+          is approved. A dispute simply means that approval hasn't happened yet. Every other milestone, approved or
+          not yet reached, is completely unaffected: a contractor never loses access to funds already released for
+          earlier, undisputed work.
+        </p>
+      </article>
+
+      <article class="arch-block">
+        <h2>Try it</h2>
+        <p>This demo button shows what raising a dispute looks like from the customer dashboard — no real dispute is created.</p>
+        <button class="btn btn-primary" id="demo-raise-dispute" data-demo-action data-status-target="dispute-demo-status" data-status-message="Dispute raised on 'Drywall &amp; interior finish' — £15,600 stays frozen in escrow, and a case mediator has been notified. You'll hear back within 3 business days.">Raise a Dispute (demo)</button>
+        <p class="action-status" id="dispute-demo-status"></p>
+      </article>
+
+      <article class="arch-block">
+        <h2>The best way to avoid one</h2>
+        <p>
+          Almost every dispute traces back to a vague milestone description agreed at the start. See
+          <a href="help-milestones.html">Breaking a Project into Milestone Tranches</a> for how to write ones that
+          are specific enough that both sides already agree what "done" looks like before work even begins.
+        </p>
+        <ul class="checklist">
+          <li>Write milestone descriptions around a verifiable outcome, not a date or a percentage</li>
+          <li>Agree inspection criteria for each milestone before work starts on it</li>
+          <li>Take dated photos at the start and end of every stage</li>
+          <li>Raise concerns early — a quick message often resolves things before a formal dispute is needed</li>
+        </ul>
+      </article>
+
+      <div class="arch-cta">
+        <a href="dashboard-customer.html" class="btn btn-primary">View Customer Dashboard</a>
+        <a href="dashboard-contractor.html" class="btn btn-ghost">View Contractor Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+      <p>Escrow-protected payments for construction and renovation projects.</p>
+    </div>
+
+    <div class="footer-links">
+      <div>
+        <h4>Product</h4>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#pricing">Pricing</a>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <a href="help-milestones.html">Milestone Tranches</a>
+        <a href="help-disputes.html">Conflict Resolution</a>
+        <a href="index.html#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <span id="year"></span> SafePay Building. All rights reserved.</p>
+    <p class="footer-disclaimer">Demo site — not a real financial service.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
