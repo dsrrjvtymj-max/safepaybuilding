@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contractor Dashboard | SafePay Building</title>
+<meta name="description" content="Mockup of the SafePay Building contractor dashboard: wallet balance, milestone submissions, payouts and paying linked suppliers.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar">
+    <a href="index.html" class="logo">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+    </a>
+
+    <nav class="app-nav">
+      <a href="dashboard-contractor.html" class="active">📊 Overview</a>
+      <a href="dashboard-contractor.html">🏗️ Projects</a>
+      <a href="dashboard-contractor.html">👛 Wallet</a>
+      <a href="dashboard-contractor.html">🔗 Suppliers</a>
+      <a href="dashboard-contractor.html">⚙️ Settings</a>
+    </nav>
+
+    <div class="app-sidebar-footer">
+      <p>Demo mockup — not a live account.</p>
+      <a href="architecture.html">How this is built →</a>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-topbar">
+      <div>
+        <h1>Welcome back, Hollis &amp; Sons</h1>
+        <p>Here's what's happening across your projects.</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="app-role-badge">🛠️ Contractor</span>
+        <span class="badge-kyc verified">✓ KYB Verified</span>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <p class="stat-box-label">Available Balance</p>
+        <p class="stat-box-value accent">£16,900.00</p>
+      </div>
+      <div class="stat-box">
+        <p class="stat-box-label">Awaiting Customer Approval</p>
+        <p class="stat-box-value hold">£15,600.00</p>
+      </div>
+      <div class="stat-box">
+        <p class="stat-box-label">Paid Out To Date</p>
+        <p class="stat-box-value">£8,500.00</p>
+      </div>
+      <div class="stat-box">
+        <p class="stat-box-label">Active Projects</p>
+        <p class="stat-box-value">1</p>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>3 Elm Grove — Rear Extension</h2>
+              <p>Customer: Alex Wood · <span class="badge-kyc verified">✓ Verified</span></p>
+            </div>
+            <span class="project-amount">£48,500.00</span>
+          </div>
+
+          <div class="milestone-list">
+            <div class="milestone-row done">
+              <div class="milestone-row-left"><span class="dot"></span> Foundation &amp; framing</div>
+              <span class="milestone-amount">£12,000 · Paid</span>
+            </div>
+            <div class="milestone-row done">
+              <div class="milestone-row-left"><span class="dot"></span> Electrical &amp; plumbing rough-in</div>
+              <span class="milestone-amount">£6,400 · Paid</span>
+            </div>
+            <div class="milestone-row active">
+              <div class="milestone-row-left"><span class="dot"></span> Drywall &amp; interior finish</div>
+              <span class="milestone-amount">£15,600 · Awaiting approval</span>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-row-left"><span class="dot"></span> Final walkthrough</div>
+              <span class="milestone-amount">£14,500</span>
+              <button class="btn btn-outline btn-sm" disabled title="Unlocks once the current milestone is approved">Locked</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Recent Transactions</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>10 Aug 2026</td>
+                  <td>Milestone 1 received from Alex Wood</td>
+                  <td>Transfer</td>
+                  <td class="amount-in">+£12,000.00</td>
+                  <td>Complete</td>
+                </tr>
+                <tr>
+                  <td>28 Aug 2026</td>
+                  <td>Milestone 2 received from Alex Wood</td>
+                  <td>Transfer</td>
+                  <td class="amount-in">+£6,400.00</td>
+                  <td>Complete</td>
+                </tr>
+                <tr>
+                  <td>29 Aug 2026</td>
+                  <td>Payout to Barclays •••• 2290</td>
+                  <td>Payout</td>
+                  <td class="amount-out">−£8,500.00</td>
+                  <td>Complete</td>
+                </tr>
+                <tr>
+                  <td>30 Aug 2026</td>
+                  <td>Paid Riverside Timber &amp; Building Supplies</td>
+                  <td>Transfer</td>
+                  <td class="amount-out">−£3,200.00</td>
+                  <td>Complete</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-head"><h2>Request Payout</h2></div>
+          <p class="wallet-flow-note">Move your available balance to your linked bank account. Domestic payouts typically arrive within seconds over Faster Payments.</p>
+          <button class="btn btn-primary btn-block" style="margin-top:14px;" data-demo-action data-status-target="payout-status" data-status-message="£16,900.00 sent to Barclays •••• 2290 — arriving shortly via Faster Payments.">Payout £16,900.00 to Barclays •••• 2290</button>
+          <p class="action-status" id="payout-status"></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Pay a Linked Supplier</h2></div>
+          <p class="wallet-flow-note">Wallet-to-wallet transfer — instant, no card fees, no bank details to exchange.</p>
+          <form class="pay-form" id="pay-supplier-form" style="margin-top:14px;">
+            <div class="form-row">
+              <label for="supplier-select">Supplier</label>
+              <select id="supplier-select">
+                <option>Riverside Timber &amp; Building Supplies Ltd</option>
+                <option>ProCore Electrical Wholesale</option>
+                <option>GreenScape Landscaping Materials</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="supplier-amount">Amount (£)</label>
+              <input type="number" id="supplier-amount" min="1" step="0.01" placeholder="0.00">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Send Payment</button>
+          </form>
+          <p class="action-status" id="pay-supplier-status"></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Linked Suppliers</h2></div>
+          <div class="supplier-list">
+            <div class="supplier-row">
+              <span class="supplier-avatar">🪵</span>
+              <div class="supplier-info">
+                <p class="supplier-name">Riverside Timber &amp; Building Supplies</p>
+                <p class="supplier-meta">Materials · KYC verified</p>
+              </div>
+            </div>
+            <div class="supplier-row">
+              <span class="supplier-avatar">🔌</span>
+              <div class="supplier-info">
+                <p class="supplier-name">ProCore Electrical Wholesale</p>
+                <p class="supplier-meta">Electrical · KYC verified</p>
+              </div>
+            </div>
+            <div class="supplier-row">
+              <span class="supplier-avatar">🌿</span>
+              <div class="supplier-info">
+                <p class="supplier-name">GreenScape Landscaping Materials</p>
+                <p class="supplier-meta">Landscaping · KYC verified</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

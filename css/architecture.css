@@ -1,0 +1,120 @@
+.main-nav a.active {
+  color: var(--color-primary);
+}
+
+.arch-hero { padding-bottom: 24px; }
+
+.arch-hero .section-sub { max-width: 760px; margin: 0 auto; }
+
+.arch-hero .section-sub a { color: var(--color-primary); text-decoration: underline; }
+
+/* Flow diagram */
+.flow-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flow-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.flow-row-branch {
+  justify-content: flex-end;
+  padding-right: 8%;
+}
+
+.flow-branch-spacer {
+  flex: 1 1 160px;
+  max-width: 220px;
+}
+
+.flow-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  width: 190px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.flow-card.flow-wallet {
+  border-color: var(--color-primary);
+  background: rgba(45, 212, 191, 0.06);
+}
+
+.flow-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+
+.flow-title {
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin: 0 0 4px;
+}
+
+.flow-note {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  font-size: 1.3rem;
+  font-weight: 700;
+  min-width: 70px;
+  text-align: center;
+}
+
+.flow-arrow span {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.flow-arrow-down { min-width: auto; }
+
+.flow-footer-bar {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px 24px;
+}
+
+/* Content blocks */
+.arch-content { max-width: 780px; }
+
+.arch-block { margin-bottom: 36px; }
+.arch-block h2 { font-size: 1.3rem; color: var(--color-text); }
+.arch-block p { font-size: 1rem; }
+.arch-block strong { color: var(--color-text); }
+
+.arch-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+@media (max-width: 900px) {
+  .flow-row { flex-direction: column; align-items: center; }
+  .flow-arrow { flex-direction: row; gap: 6px; }
+  .flow-row-branch { justify-content: center; padding-right: 0; }
+  .flow-branch-spacer { display: none; }
+  .flow-card { width: 100%; max-width: 280px; }
+}

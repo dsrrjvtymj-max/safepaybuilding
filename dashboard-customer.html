@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Dashboard | SafePay Building</title>
+<meta name="description" content="Mockup of the SafePay Building customer dashboard: wallet, escrow, milestone approvals and transaction history.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar">
+    <a href="index.html" class="logo">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+    </a>
+
+    <nav class="app-nav">
+      <a href="dashboard-customer.html" class="active">📊 Overview</a>
+      <a href="dashboard-customer.html">🏗️ Projects</a>
+      <a href="dashboard-customer.html">👛 Wallet</a>
+      <a href="dashboard-customer.html">🧾 Transactions</a>
+      <a href="dashboard-customer.html">⚙️ Settings</a>
+    </nav>
+
+    <div class="app-sidebar-footer">
+      <p>Demo mockup — not a live account.</p>
+      <a href="architecture.html">How this is built →</a>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-topbar">
+      <div>
+        <h1>Welcome back, Alex</h1>
+        <p>Here's what's happening across your projects.</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="app-role-badge">👤 Customer</span>
+        <span class="badge-kyc verified">✓ KYC Verified</span>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <p class="stat-box-label">In Escrow</p>
+        <p class="stat-box-value hold">£30,100.00</p>
+      </div>
+      <div class="stat-box">
+        <p class="stat-box-label">Released So Far</p>
+        <p class="stat-box-value accent">£18,400.00</p>
+      </div>
+      <div class="stat-box">
+        <p class="stat-box-label">Total Project Value</p>
+        <p class="stat-box-value">£48,500.00</p>
+      </div>
+      <div class="stat-box">
+        <p class="stat-box-label">Active Projects</p>
+        <p class="stat-box-value">1</p>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>3 Elm Grove — Rear Extension</h2>
+              <p>Contractor: Hollis &amp; Sons Building Ltd · <span class="badge-kyc verified">✓ Verified</span></p>
+            </div>
+            <span class="project-amount">£48,500.00</span>
+          </div>
+
+          <div class="milestone-list">
+            <div class="milestone-row done">
+              <div class="milestone-row-left"><span class="dot"></span> Foundation &amp; framing</div>
+              <span class="milestone-amount">£12,000</span>
+            </div>
+            <div class="milestone-row done">
+              <div class="milestone-row-left"><span class="dot"></span> Electrical &amp; plumbing rough-in</div>
+              <span class="milestone-amount">£6,400</span>
+            </div>
+            <div class="milestone-row active">
+              <div class="milestone-row-left"><span class="dot"></span> Drywall &amp; interior finish</div>
+              <span class="milestone-amount">£15,600</span>
+              <button class="btn btn-primary btn-sm" data-milestone-action data-status-target="milestone-status" data-status-message="Milestone approved — £15,600 transferred from your escrow wallet to Hollis &amp; Sons' wallet.">Approve</button>
+            </div>
+            <div class="milestone-row">
+              <div class="milestone-row-left"><span class="dot"></span> Final walkthrough</div>
+              <span class="milestone-amount">£14,500</span>
+            </div>
+          </div>
+          <p class="action-status" id="milestone-status"></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Recent Transactions</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2 Sep 2026</td>
+                  <td>Payin — bank transfer to wallet</td>
+                  <td>Payin</td>
+                  <td class="amount-in">+£48,500.00</td>
+                  <td>Complete</td>
+                </tr>
+                <tr>
+                  <td>10 Aug 2026</td>
+                  <td>Milestone 1 released to Hollis &amp; Sons</td>
+                  <td>Transfer</td>
+                  <td class="amount-out">−£12,000.00</td>
+                  <td>Complete</td>
+                </tr>
+                <tr>
+                  <td>28 Aug 2026</td>
+                  <td>Milestone 2 released to Hollis &amp; Sons</td>
+                  <td>Transfer</td>
+                  <td class="amount-out">−£6,400.00</td>
+                  <td>Complete</td>
+                </tr>
+                <tr>
+                  <td>—</td>
+                  <td>Milestone 3 — pending your approval</td>
+                  <td>Transfer</td>
+                  <td class="amount-out">−£15,600.00</td>
+                  <td>Pending</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-head"><h2>Fund a Project</h2></div>
+          <p class="wallet-flow-note">Money moves from your bank into your SafePay wallet. It only leaves that wallet once you approve a milestone — so nothing reaches your contractor before the work does.</p>
+          <button class="btn btn-primary btn-block" style="margin-top:14px;" data-demo-action data-status-target="fund-status" data-status-message="£48,500.00 moved from your linked bank account into your SafePay escrow wallet.">Fund New Project</button>
+          <p class="action-status" id="fund-status"></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Linked Bank Account</h2></div>
+          <p style="font-size:0.9rem; color:var(--color-text-muted); margin:0;">Barclays UK •••• 4471</p>
+          <p style="font-size:0.8rem; color:var(--color-text-muted); margin:6px 0 0;">Used for payins only — funds are held with Mangopay, not on SafePay Building's own account.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

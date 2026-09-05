@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How It's Built | SafePay Building</title>
+<meta name="description" content="How SafePay Building uses MangoPay's FCA-authorised wallet infrastructure to run escrow, milestone payments, and linked-supplier transfers.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/architecture.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <a href="index.html#features">Features</a>
+      <a href="architecture.html" class="active">How It's Built</a>
+      <a href="dashboard-customer.html">Customer Dashboard</a>
+      <a href="dashboard-contractor.html">Contractor Dashboard</a>
+      <a href="index.html#contact" class="nav-cta">Get Started</a>
+    </nav>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="section arch-hero">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How It's Built</p>
+        <h1>Powered by MangoPay's regulated wallet infrastructure</h1>
+        <p class="section-sub">
+          SafePay Building never touches client money directly. Every wallet, payment and payout runs through
+          Mangopay, an <a href="https://mangopay.com/press-and-media/mangopay-granted-uk-e-money-license" target="_blank" rel="noopener">FCA-authorised Electronic Money Institution</a><sup>1</sup>,
+          with funds ultimately held in a segregated Barclays e-money account — separate from SafePay's own
+          operating funds.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="flow-diagram" role="img" aria-label="Diagram showing money flowing from customer bank to customer wallet, held in escrow until milestone approval, then transferred to contractor wallet, optionally on to a linked supplier wallet, and finally paid out to a bank account.">
+
+        <div class="flow-row">
+          <div class="flow-card">
+            <span class="flow-icon">🏦</span>
+            <p class="flow-title">Customer's bank / card</p>
+            <p class="flow-note">Pays into their SafePay wallet</p>
+          </div>
+          <div class="flow-arrow">→<span>Payin</span></div>
+          <div class="flow-card flow-wallet">
+            <span class="flow-icon">👛</span>
+            <p class="flow-title">Customer Wallet</p>
+            <p class="flow-note">Funds held here = the escrow</p>
+          </div>
+          <div class="flow-arrow">→<span>Milestone approved</span></div>
+          <div class="flow-card flow-wallet">
+            <span class="flow-icon">👛</span>
+            <p class="flow-title">Contractor Wallet</p>
+            <p class="flow-note">Transfer releases the agreed amount</p>
+          </div>
+        </div>
+
+        <div class="flow-row flow-row-branch">
+          <div class="flow-branch-spacer"></div>
+          <div class="flow-arrow flow-arrow-down">↓<span>Pay a supplier</span></div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-card">
+            <span class="flow-icon">🧾</span>
+            <p class="flow-title">Contractor's bank</p>
+            <p class="flow-note">Payout on request</p>
+          </div>
+          <div class="flow-arrow flow-arrow-reverse"><span>Payout</span>←</div>
+          <div class="flow-branch-spacer"></div>
+          <div class="flow-arrow"><span>Transfer</span>→</div>
+          <div class="flow-card flow-wallet">
+            <span class="flow-icon">👛</span>
+            <p class="flow-title">Supplier Wallet</p>
+            <p class="flow-note">Any supplier also set up on SafePay</p>
+          </div>
+          <div class="flow-arrow">→<span>Payout</span></div>
+          <div class="flow-card">
+            <span class="flow-icon">🏦</span>
+            <p class="flow-title">Supplier's bank</p>
+          </div>
+        </div>
+
+        <div class="flow-footer-bar">
+          Every wallet above lives inside Mangopay, an FCA-authorised EMI — funds are ultimately held in a segregated Barclays e-money account, not on SafePay Building's own balance sheet.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container arch-content">
+
+      <article class="arch-block">
+        <h2>Users &amp; KYC</h2>
+        <p>
+          Every Customer, Contractor and Supplier is onboarded as a Mangopay <strong>User</strong> — an individual or
+          a business. Before anyone can hold a live wallet balance or request a payout, they have to clear Mangopay's
+          KYC/KYB checks: proof of identity, proof of address, and for businesses, registration and beneficial-owner
+          documentation<sup>2</sup>. SafePay Building collects this during sign-up and hands it to Mangopay's API —
+          we never store the documents ourselves.
+        </p>
+      </article>
+
+      <article class="arch-block">
+        <h2>Wallets</h2>
+        <p>
+          Each onboarded user gets their own Mangopay e-wallet. Wallets can receive funds (a <strong>Payin</strong>),
+          hold a balance, move money to another wallet on the platform (a <strong>Transfer</strong>), and send money
+          out to a real bank account (a <strong>Payout</strong>)<sup>3</sup>. SafePay Building's dashboards are really
+          just a purpose-built view onto these four actions, tailored to construction projects.
+        </p>
+      </article>
+
+      <article class="arch-block">
+        <h2>Escrow, via milestone-linked transfers</h2>
+        <p>
+          SafePay Building doesn't move money the moment work is marked done. When a customer funds a project, that
+          money sits in <em>their own</em> wallet — not the contractor's — until a milestone is approved. Approval is
+          what triggers a Mangopay Transfer moving the agreed amount into the contractor's wallet. If a milestone is
+          disputed, the transfer simply doesn't fire until the case is resolved.
+        </p>
+      </article>
+
+      <article class="arch-block">
+        <h2>Linked suppliers — the wallet network effect</h2>
+        <p>
+          Because every party sits inside the same wallet infrastructure, money doesn't have to leave the platform to
+          move between them. A contractor who needs to pay a plasterer, a timber yard, or any other supplier that's
+          also set up on SafePay Building can send a wallet-to-wallet Transfer directly — no card fees, no exchanging
+          bank details, and the payment stays traceable back to the original project. Suppliers get a lightweight
+          version of the wallet dashboard: incoming payments, balance, and a payout button — without any of the
+          project or milestone tooling a contractor needs.
+        </p>
+      </article>
+
+      <article class="arch-block">
+        <h2>Payouts to real bank accounts</h2>
+        <p>
+          When a contractor or supplier is ready to withdraw, Mangopay pays out from their wallet to a UK bank
+          account they've registered as a <strong>Recipient</strong>. Domestic payouts typically arrive within
+          seconds over Faster Payments; international payouts route over SWIFT and can take up to four business
+          days<sup>3</sup>.
+        </p>
+      </article>
+
+      <p class="sources-note">
+        Sources: <sup>1</sup> <a href="https://mangopay.com/press-and-media/mangopay-granted-uk-e-money-license" target="_blank" rel="noopener">Mangopay — granted UK e-money licence</a>,
+        <sup>2</sup> <a href="https://docs.mangopay.com/guides/payouts" target="_blank" rel="noopener">Mangopay docs — Payouts &amp; KYC requirements</a>,
+        <sup>3</sup> <a href="https://docs.mangopay.com/" target="_blank" rel="noopener">Mangopay docs — Wallets, Payins, Transfers &amp; Payouts</a>.
+      </p>
+
+      <div class="arch-cta">
+        <a href="dashboard-customer.html" class="btn btn-primary">View Customer Dashboard</a>
+        <a href="dashboard-contractor.html" class="btn btn-ghost">View Contractor Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon" aria-hidden="true">🛡️</span>
+      <span class="logo-text">SafePay<span class="logo-accent">Building</span></span>
+      <p>Escrow-protected payments for construction and renovation projects.</p>
+    </div>
+
+    <div class="footer-links">
+      <div>
+        <h4>Product</h4>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#pricing">Pricing</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="index.html#faq">FAQ</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <span id="year"></span> SafePay Building. All rights reserved.</p>
+    <p class="footer-disclaimer">Demo site — not a real financial service.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
